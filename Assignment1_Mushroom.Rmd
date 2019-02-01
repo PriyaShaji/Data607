@@ -1,0 +1,159 @@
+---
+title: "Assignment1_Mushroom"
+author: "Priya Shaji"
+date: "January 31, 2019"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Read the file in table format and create a data frame from it
+```{r}
+Mushroom_Family <- read.csv(url("https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data"), header = FALSE)
+
+```
+## Mushroom_Family is the dataframe created. Dimensions of the dataframe:
+```{r}
+dim(Mushroom_Family)
+```
+## The first six rows of the data frame are:
+```{r}
+head.matrix(x = Mushroom_Family, 6L)
+
+```
+## Mushroom_Sibling is the subset of the Mushroom_Family dataframe from the selected columns:
+```{r}
+Mushroom_Sibling <- Mushroom_Family[,c(1,4,6,10,11,23)]
+
+```
+## Renaming the column names of the subset dataframe:
+```{r}
+names(Mushroom_Sibling) = c("Type", "Cap_Color", "Odor", "Gill_Color", "Stem_Shape","Habitat")
+
+```
+## Column names of Mushroom_Sibling dataframe are renamed:
+```{r}
+names(Mushroom_Sibling)
+
+```
+
+## Replace the abbreviation used in column Type:
+1. Convert Columns to characters
+```{r}
+Mushroom_Sibling$Type <- as.character(Mushroom_Sibling$Type)
+
+```
+2. Replace abbreviation with meaningful names
+```{r}
+Mushroom_Sibling$Type[Mushroom_Sibling$Type == "e"] <- "edible"
+Mushroom_Sibling$Type[Mushroom_Sibling$Type == "p"] <- "poisonous"
+
+```
+3.If needed to maintain columns as factors 
+```{r}
+Mushroom_Sibling$Type <- as.factor(Mushroom_Sibling$Type)
+
+```
+##Display first six rows of the dataframe to verify the change
+```{r}
+head.matrix(Mushroom_Sibling, 6L)
+
+```
+##Replace abbreviations of colum Cap_Color 
+```{r}
+Mushroom_Sibling$Cap_Color <- as.character(Mushroom_Sibling$Cap_Color)
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "n"] <- "brown"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "b"] <- "buff"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "c"] <- "cinnamon"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "g"] <- "gray"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "r"] <- "green"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "p"] <- "pink"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "u"] <- "purple"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "e"] <- "red"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "w"] <- "white"
+Mushroom_Sibling$Cap_Color[Mushroom_Sibling$Cap_Color == "y"] <- "yellow"
+Mushroom_Sibling$Cap_Color <- as.factor(Mushroom_Sibling$Cap_Color)
+
+```
+## Replace Abbreviations of column Odor
+```{r}
+Mushroom_Sibling$Odor <- as.character(Mushroom_Sibling$Odor)
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "a"] <- "almond"
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "l"] <- "anise"
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "c"] <- "creosote"
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "y"] <- "fishy"
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "f"] <- "foul"
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "m"] <- "musty"
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "n"] <- "none"
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "p"] <- "pungent"
+Mushroom_Sibling$Odor[Mushroom_Sibling$Odor == "s"] <- "spicy"
+Mushroom_Sibling$Odor <- as.factor(Mushroom_Sibling$Odor)
+
+```
+
+## Replace abbreviation of column Gill_Color
+```{r}
+head.matrix(Mushroom_Sibling, 3L)
+Mushroom_Sibling$Gill_Color <- as.character(Mushroom_Sibling$Gill_Color)
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "k"] <- "black"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "n"] <- "brown"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "b"] <- "buff"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "h"] <- "chocolate"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "g"] <- "gray"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "r"] <- "green"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "o"] <- "orange"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "p"] <- "pink"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "u"] <- "purple"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "e"] <- "red"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "w"] <- "white"
+Mushroom_Sibling$Gill_Color[Mushroom_Sibling$Gill_Color == "y"] <- "yellow"
+Mushroom_Sibling$Gill_Color <- as.factor(Mushroom_Sibling$Gill_Color)
+
+```
+## Replace abbreviation of column Stem_Shape
+```{r}
+Mushroom_Sibling$Stem_Shape <- as.character(Mushroom_Sibling$Stem_Shape)
+Mushroom_Sibling$Stem_Shape[Mushroom_Sibling$Stem_Shape == "e"] <- "enlarging"
+Mushroom_Sibling$Stem_Shape[Mushroom_Sibling$Stem_Shape == "t"] <- "tapering"
+Mushroom_Sibling$Stem_Shape <- as.factor(Mushroom_Sibling$Stem_Shape)
+
+```
+## Replace abbreviations of column Habitat
+```{r}
+Mushroom_Sibling$Habitat <- as.character(Mushroom_Sibling$Habitat)
+Mushroom_Sibling$Habitat[Mushroom_Sibling$Habitat == "g"] <- "grasses"
+Mushroom_Sibling$Habitat[Mushroom_Sibling$Habitat == "l"] <- "leaves"
+Mushroom_Sibling$Habitat[Mushroom_Sibling$Habitat == "m"] <- "meadows"
+Mushroom_Sibling$Habitat[Mushroom_Sibling$Habitat == "p"] <- "paths"
+Mushroom_Sibling$Habitat[Mushroom_Sibling$Habitat == "u"] <- "urban"
+Mushroom_Sibling$Habitat[Mushroom_Sibling$Habitat == "w"] <- "waste"
+Mushroom_Sibling$Habitat[Mushroom_Sibling$Habitat == "d"] <- "woods"
+Mushroom_Sibling$Habitat <- as.factor(Mushroom_Sibling$Habitat)
+
+```
+##Display the table to verify:
+```{r}
+head.matrix(x = Mushroom_Sibling, 6L)
+
+```
+##By exploring and analyzing the dataset and the data description of Mushrooms ,the following conclusions can be drawn:
+1) Edible and poisonous mushrooms can be analyzed based on two strong factors:
+Odor and Habitat
+With Odor being the strongest factor.
+
+2) Therefore Let's calculate the frequencies of both the factors affecting the edibility of the mushrooms:
+```{r}
+table = table(Mushroom_Sibling$Type, Mushroom_Sibling$Odor,Mushroom_Sibling$Habitat)
+result_data = as.data.frame(table)
+names(result_data)[1] = 'Type'
+names(result_data)[2] = 'Odor'
+names(result_data)[3] = 'Habitat'
+result_data
+```
+
+
