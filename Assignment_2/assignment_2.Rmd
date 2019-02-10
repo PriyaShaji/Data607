@@ -1,0 +1,103 @@
+---
+title: "Assignment_2"
+author: "Priya Shaji"
+date: "February 8, 2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+##Movie_Survey
+
+# {.tabset}
+## libraries
+There are few libraries that is to be installed
+
+I used RMariaDB package to connect to MySQL
+
+```{r}
+## install.packages("RMariaDB")
+library(RMariaDB)
+```
+
+```{r}
+library("RMySQL")
+library("DT")
+library("knitr")
+library("reshape2")
+library("tidyr")
+library(ggplot2)
+```
+
+## Movie Survey
+
+I created a google form survey to collect movie ratings from 5 of my friends
+
+```{r}
+
+knitr::include_graphics("C:/Users/Admin/Documents/data 607/assignment_2/image.jpg")
+```
+
+
+## Connetion to MySQL Database
+
+
+(a) Add a user to connect to the database
+(b) Create an R script that connects to the database
+
+Connecting to the database with a password
+
+```{r}
+localuserpassword <- "data607@19"
+movieDb <- dbConnect(RMariaDB::MariaDB(), user='data607', password=localuserpassword, dbname='movie_rating', host='localhost')
+
+```
+
+List tables in movieDb and display table movie_survey
+```{r}
+dbListTables(movieDb)
+movieRatings <- dbGetQuery( movieDb, "select
+Name, Movie_Name,Ratings from movie_survey" )
+datatable(movieRatings)
+
+```
+
+
+## Analyzing the datatable
+
+Aggregate of the movie ratings
+
+```{r}
+movieRatingsAgg <- dcast( movieRatings, Movie_Name~Ratings)
+kable( movieRatingsAgg )
+
+```
+
+
+Maximum no. of ratings a movie got
+
+```{r}
+most_rated <- dbGetQuery(movieDb, "select Movie_Name, count(Ratings)
+                 from movie_survey")
+most_rated
+```
+
+Creating a bar plot of the Movie rating
+
+```{r}
+ggplot(movieRatings, aes(movieRatings$Movie_Name, fill = Ratings)) +
+geom_bar(stat = "count")
+
+```
+
+Close the connection
+```{r}
+dbDisconnect(movieDb)
+```
+
+
+
