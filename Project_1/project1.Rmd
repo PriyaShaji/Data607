@@ -50,7 +50,7 @@ Group Name: SPARK
 
 #### Github 
 
-All the project work and graphics are availble under github [Project Page](https://github.com/Rajwantmishra/ms-project-607_1). 
+All the project work and graphics are availble under github [Project Page](https://github.com/PriyaShaji/ms-project-607_1). 
 
 
 ***
