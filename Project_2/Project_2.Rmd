@@ -1,0 +1,378 @@
+---
+title: "DATA 607 Project 1"
+author: "Priya Shaji"
+date: "3/5/2019"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Preparing different datasets for downstream analysis work
+
+### loading the required packages 
+
+```{r echo=TRUE}
+#install.packages("tidyr")
+#install.packages("dplyr")
+library(tidyr)
+library(dplyr)
+```
+
+### Datasets{.tabset .tabset-fade .tabset-pills}
+
+#### Dataset of relation between income and religion in U.S experiment{.tabset .tabset-fade .tabset-pills}
+
+##### Create a dataframe and load the dataset from the .csv file
+
+
+
+This dataset explores the relationship between income and religion in the US. It comes from a report produced by the Pew Research Center, an American think-tank that collects data on attitudes to topics ranging from religion to the internet, and produces many reports that contain datasets in this format.
+
+
+```{r}
+
+library(tibble)
+d1 <- as_tibble(read.csv("/Users/priyashaji/Documents/cuny msds/Spring'19/data 607/projects/project_2/thinktank .csv", stringsAsFactors = FALSE, check.names = FALSE))
+d1
+
+```
+
+##### Tidying and Transforming Data
+
+This dataset has three variables, religion, income and frequency. To tidy it, we need to gather the non-variable columns into a two-column key-value pair. This action is often described as making a wide dataset long (or tall), but I’ll avoid those terms because they’re imprecise.
+
+When gathering variables, we need to provide the name of the new key-value columns to create. The first argument, is the name of the key column, which is the name of the variable defined by the values of the column headings. In this case, it’s income. The second argument is the name of the value column, frequency. The third argument defines the columns to gather, here, every column except religion.
+ 
+ 
+```{r}
+
+d1_clean<-d1 %>%
+  gather(income, frequency, -religion)
+
+
+```
+ 
+
+
+```{r}
+d1_clean
+
+```
+
+This form is tidy because each column represents a variable and each row represents an observation, in this case a demographic unit corresponding to a combination of religion and income.
+
+Plot a graph between income and frequency which is grouped by religion
+
+```{r}
+library(ggplot2)
+ggplot(d1_clean, aes(income, frequency)) + 
+  geom_line(aes(group = religion), colour = "grey50") + 
+  geom_point(aes(colour = religion))
+
+```
+
+
+
+
+In graph we see, the highest no. of people which has a salary range below 10k $ belong to evangelical prot
+
+And the highest no. of people which has a salary range between >150k $ belong to Mainline Prot followed by catholic group.
+
+
+Calculate the mean for the number of people in each religion group using the aggregate function.
+There are total 18 groups of religion.
+
+
+
+
+```{r}
+aggregate(frequency ~ religion , d1_clean, mean)
+```
+
+
+
+```{r}
+
+ggplot(data=d1_clean, aes(x=income, y=frequency, fill=religion)) + geom_bar(stat="identity",position = 'stack') + ggtitle('Income Distribution Within U.S. Religious Groups')
+```
+
+
+##### Conclusion
+
+From the graph we can see that religious tradition clearly varies by income level. We can see that for the highest income category (>$150k), ‘Mainline Prot’ followed by ‘ Catholic’ have the highest proportions. If we examine the lowest income category (<$10k) we see that ‘Evangelical Prot’ have the highest proportions
+
+#### Dataset of Engilsh Premier League {.tabset .tabset-fade .tabset-pills}
+
+##### Create a dataframe and load the dataset from the .csv file
+
+```{r}
+#Tranform CSV.file into a tbl_df so it prints tables in a more friendly way.
+leaguedata<- read.csv(file="https://raw.githubusercontent.com/yli74/movies/master/Engilsh%20Premier%20League%20Data.csv",stringsAsFactors = FALSE,sep = ",")
+leaguedata_tbl=tbl_df(leaguedata)
+leaguedata_tbl
+```
+
+
+##### Tidying and Transforming Data
+
+```{r}
+# Description of the Data
+str(leaguedata)
+names(leaguedata)
+
+```
+
+
+ Using the functions provided by tidyr and dplyr packages
+
+Select the appropriate columns that are needed. Then calculate the total goals by adding total_goals_scored_home and total_goals_scored_away
+And also calculating Total_goals_conceded_home by adding goals_conceded_at_home and goals_conceded_away
+
+rename those columns for a meaningful look
+
+
+
+
+```{r}
+tidy_leaguedata <-leaguedata_tbl %>%
+  select(Team,GF:Pts,-GD,GFh,GAh,GFa,Gaa) %>%
+  mutate(Total_goals=GF+GA,Total_goals_conceded_home=GAh+Gaa) %>%
+  rename(team=Team,total_goals_scored_home=GF,total_goals_scored_away=GA,goals_scored_at_home=GFh,goals_scored_away=GFa,goals_conceded_at_home=GAh,goals_conceded_away=Gaa)
+tidy_leaguedata
+```
+
+According to the chart found on www.soccerstats.com, home advantage should show the following data, total points, total points scored at home,total goals scored at home
+
+To count the total points scored at home, home advantage 1=(total_goals_scored_home/Total_goals)*100)).
+
+To count the total goals scored at home,home advantage 2 =((goals_scored_at_home/(goals_scored_away+goals_scored_at_home)))*100)
+
+
+```{r}
+
+Home_advantage<-tidy_leaguedata %>%
+  
+  group_by(team) %>%
+  
+  mutate(home_advantage1=((total_goals_scored_home/Total_goals)*100))%>%
+  
+  mutate(home_advantage2=((goals_scored_at_home/(goals_scored_away+goals_scored_at_home)))*100)%>%
+  
+  select(team,home_advantage1,home_advantage2,Total_goals)%>%
+  
+  arrange(home_advantage1)
+
+Home_advantage
+
+```
+
+
+To see which team scored the most POINTS at home
+
+
+```{r}
+library(ggplot2)
+
+ggplot(data=Home_advantage, aes(x = team, y = home_advantage1,fill=home_advantage1)) + geom_bar(stat="identity",position = 'dodge') + ggtitle('Home Advanatge 1')+coord_flip()
+```
+
+
+Tottenham scored the most points at home, Stoke city scored the least
+
+
+Calculate the mean for the number of points scored by each team group using the aggregate function.
+There are total 20 teams.
+
+
+```{r}
+aggregate(home_advantage1 ~ team , Home_advantage, mean)
+```
+
+By calculating overall mean, highest mean points are scored by Tottenham, and lowest meanpoints are scored by Stoke City.
+
+
+Now we will summarize the dataset by grouping it by team and calculating the point_rate
+
+```{r}
+by_team_point <- group_by(Home_advantage, team) 
+summarize(by_team_point, points_rate<-sum(home_advantage1)/sum(Total_goals))
+```
+
+
+
+
+```{r}
+summarize(by_team_point, sum(home_advantage1))
+```
+
+
+By calculating overall point_rate, highest mean points are scored by Tottenham, and lowest meanpoints are scored by Stoke City.
+
+
+
+
+To see which team scored the most GOALS at home
+
+
+```{r}
+ggplot(data=Home_advantage, aes(x = team, y = home_advantage2,fill=home_advantage2,color="red")) + geom_bar(stat="identity",position = 'dodge') + ggtitle('Home Advanatge 2')+coord_flip()
+```
+
+
+Burnley scored the most goals at home, Stoke city scored the least.
+
+
+Now we will summarize the dataset by grouping it by team and calculating the goal_rate
+
+```{r}
+by_team_goal <- group_by(Home_advantage, team) 
+summarize(by_team_goal, goal_rate<-sum(home_advantage2)/sum(Total_goals))
+```
+
+
+```{r}
+summarize(by_team_goal, sum(home_advantage2))
+```
+
+
+By calculating overall goal_rate, highest mean goals are scored by Burnley, and lowest mean goals are scored by Stoke City.
+
+
+Calculate the mean for the number of goals scored by each team group using the aggregate function.
+There are total 20 teams
+
+```{r}
+
+aggregate(home_advantage2 ~ team , Home_advantage, mean)
+
+```
+
+By calculating overall mean, highest mean goals are scored by Burnley, and lowest mean goals are scored by Stoke City.
+
+
+##### Conclusion
+
+Tottenham scored the most points at home, Stoke city scored the least
+
+
+Burnley scored the most goals at home, Stoke city scored the least.
+
+
+#### Dataset of Compairing monthly citizenship for a given region {.tabset .tabset-fade .tabset-pills}
+
+##### Create a dataframe and load the dataset from the .csv file
+
+```{r}
+#Data from "Tips for Simplifying Crosstab Query Statements"", Rob Gravelle, Database Journal, 2010
+
+citizenship <- read.csv(file="https://raw.githubusercontent.com/yli74/movies/project-2/Crosstab%20Query.csv",header = TRUE,stringsAsFactors = FALSE, check.names = F,sep = ",")
+citizenship
+```
+
+
+##### Tidying and Transforming Data
+
+
+Using the gather() to transform the data
+
+To tidy the data, there are total  4 varibles in which we can tidy the dataset. 
+
+The four variables are: Month, region, month_total,Total
+
+```{r}
+tidy_citizenship <- citizenship %>%
+  gather("region","month_total",2:6) %>%
+  select(Month, region, month_total,TOTAL)
+tidy_citizenship
+```
+
+
+Summary of the tidy dataset
+
+```{r}
+summary(tidy_citizenship)
+```
+
+
+
+Now we have a tidy dataset, we’ll Compare monthly citizenship for the given regions by graphics
+
+
+To see which region issues the most citizenships in the past 9 months
+
+
+```{r}
+library(ggplot2)
+
+ggplot(data=tidy_citizenship, aes(x = region, y = month_total, fill = Month)) + geom_bar(stat="identity",position = 'stack') + ggtitle('Compare monthly citizenship for the given regions')
+```
+
+
+Region 3 issued the most citizenships over in the last 9 months and Region 4 issued the least.
+
+Calculate the mean for the number of citizenships issued  by each region using the aggregate function.
+There are total 5 teams.
+
+```{r}
+
+aggregate(month_total ~ region ,tidy_citizenship, mean)
+
+```
+
+
+Therefore, by calculating the overall mean by regions, we conclude that Region 3 issued most citizenships and Region 4 issued least
+
+
+
+
+Now we will summarize the dataset by grouping it by region and calculating the rate in which the citizenship is being offered.
+
+
+
+```{r}
+
+by_region <- group_by(tidy_citizenship, region) 
+summarize(by_region, citizenship_rate<-sum(month_total)/sum(TOTAL))
+
+
+```
+
+
+```{r}
+summarize(by_region, sum(month_total))
+```
+
+
+We will carry out a proportion test to know the statistical difference bewttn the Region 3 and Region 4
+
+
+```{r}
+prop.test(x=c(4156,62), n=c(8188,8188))
+```
+
+
+We can see there is a significant statistical difference between region 3 and region 4 proportion.
+
+We can also group the dataset by month to make it more specific.
+
+```{r}
+by_month = group_by(tidy_citizenship, Month,region)
+df2 = as.data.frame(summarize(by_month, citizenship_rate=sum(month_total)/sum(TOTAL)))
+df2
+```
+
+
+##### Conclusion
+
+By doing various analyses on the citizenship dataset, we conclude that:
+
+Region 3 issued the most citizenships over in the last 9 months and Region 4 issued the least.
