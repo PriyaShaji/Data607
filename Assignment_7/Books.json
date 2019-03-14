@@ -2,25 +2,25 @@
   {
     "Title" : "When God writes your love story",
     "Author" : "Leslie Ludy, Eric Ludy",
-    "Year Published" : "1999",
+    "Year_Published" : "1999",
     "OriginalLanguage_written" : "English"
-    "Good reads rating" : "4.1"
+    "Goodreads_rating" : "4.1"
   }
 ,
   {
     "Title" : "Discerning the Voice of God: How to Recognize When God Speaks",
     "Author" : "Priscilla Shirer",
-    "Year Published" : "2006",
+    "Year_Published" : "2006",
     "OriginalLanguage_written" : "English"
-    "Good reads rating" : "4.5"
+    "Goodreads_rating" : "4.5"
   }
 ,
   {    
     "Title" : "The Lost Art of True Beauty ",
     "Author" : "Leslie Ludy",
-    "Year Published" : "2010",
-    "Category" : "English"
-    "OriginalLanguage_written" : "4.12"
+    "Year_Published" : "2010",
+    "OriginalLanguage_written" : "English"
+    "Goodreads_rating" : "4.12"
   }
 
 ]}
