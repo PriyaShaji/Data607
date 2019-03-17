@@ -1,0 +1,213 @@
+---
+title: "DATA 607_ASSIGNMENT 7"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::html_clean:
+    highlight: kate
+---
+
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+
+# Working with XML and JSON in R{.tabset}
+
+## Our Goal
+
+Pick three of your favorite books on one of your favorite subjects. At least one of the books should have more than one author. For each book, include the title, authors, and two or three other attributes that you find interesting.
+
+
+Take the information that you’ve selected about these three books, and separately create three files which store the book’s information in HTML (using an html table), XML, and JSON formats (e.g. “books.html”, “books.xml”, and “books.json”). To help you better understand the different file structures, I’d prefer that you create each of these files “by hand” unless you’re already very comfortable with the file formats.
+
+
+Write R code, using your packages of choice, to load the information from each of the three sources into separate R data frames. Are the three data frames identical?
+
+## Loading the required packages
+
+1) Install package `xml` and load the library
+
+```{r}
+#options(repos = c(CRAN = "http://cran.rstudio.com"))
+#install.packages('XML')
+suppressWarnings(suppressMessages(library(XML)))
+```
+
+2) Install the package `RCurl` and load the library
+
+
+```{r}
+#install.packages('RCurl')
+suppressWarnings(suppressMessages(library(RCurl)))
+```
+
+
+3) Install the package `bitops` and load the library
+
+
+```{r}
+#install.packages('bitops')
+suppressWarnings(suppressMessages(library(bitops)))
+```
+
+
+4) Install the package `rjson` and load the library
+
+
+```{r}
+#install.packages('rjson')
+suppressWarnings(suppressMessages(library(rjson)))
+
+suppressWarnings(suppressMessages(library(jsonlite)))
+
+```
+
+
+5) Install the package `tidyr` and load the library
+
+
+```{r}
+#install.packages("tidyr")
+suppressWarnings(suppressMessages(library(tidyr)))
+```
+
+6) Install the package `dplyr` and load the library
+
+```{r}
+#install.packages("dplyr")
+suppressWarnings(suppressMessages(library(dplyr)))
+```
+
+7) Install the package `stringr` and load the library
+
+```{r}
+#install.packages("stringr")
+suppressWarnings(suppressMessages(library(stringr)))
+```
+
+
+7) Install the package `jsonlite` and load the library
+
+```{r}
+#install.packages("jsonlite")
+suppressWarnings(suppressMessages(library(jsonlite)))
+```
+
+## Importing dataset Books from XML Table
+
+1) Load the XML table of Books into R Dataframe
+2) get the dataset Books using `getURL()` function
+3) assign the dataset to `xml_books`
+
+```{r}
+xml_books<-getURL("https://raw.githubusercontent.com/PriyaShaji/Data607/master/Assignment_7/books.xml")
+
+```
+
+4) Convert the `xml_books` table from xml to dataframe format using `xmlToDataFrame()`
+
+
+```{r}
+books_xmltable<-xmlToDataFrame(xml_books, stringsAsFactors = FALSE)
+
+books_xmltable
+
+```
+
+
+The above dataframe has following columns:
+1) `Title`
+2) `Author(Book 1 has two authors ; Book 2 , Book 3 has 1 author)`
+3) `Year_Published`
+4) `OriginalLanguage_written`
+5) `Goodreads_rating`
+
+## Importing dataset Books from HTML Table
+
+1) Load the HTML table of Books into R Dataframe
+2) get the dataset Books using `getURL()` function
+3) assign the dataset to `html_books`
+
+```{r}
+html_books<-getURL("https://raw.githubusercontent.com/PriyaShaji/Data607/master/Assignment_7/books.html")
+
+```
+
+4) Convert the html_books table from html to dataframe format using `readHTMLTable()`
+
+
+```{r}
+
+books_htmltable<-readHTMLTable(html_books, stringsAsFactors = FALSE)
+
+books_htmltable
+
+```
+
+
+
+The above dataframe has following columns:
+1) `Title`
+2) `Author(Book 1 has two authors ; Book 2 , Book 3 has 1 author)`
+3) `Year_Published`
+4) `OriginalLanguage_written`
+5) `Goodreads_rating`
+
+
+## Importing dataset Books from JSON Table
+
+1) Load the JSON table of Books into R Dataframe
+2) get the dataset Books using `fromJSON()` function
+3) assign the dataset to `json_books`
+
+```{r}
+json_books <- fromJSON("https://raw.githubusercontent.com/PriyaShaji/Data607/master/Assignment_7/Books.json" )
+
+json_books
+
+```
+
+
+The above dataframe has following columns:
+1) `Title`
+2) `Author(Book 1 has two authors ; Book 2 , Book 3 has 1 author)`
+3) `Year_Published`
+4) `OriginalLanguage_written`
+5) `Goodreads_rating`
+
+
+
+## Conclusion
+
+The XML, HTML, JSON datastructure is unique in it's structure and all the three dataframes are unique by its format i.e. .xml, .json, .html, all the three dataframes are identical by the number of content and by the matter of content
+
+The `XML` Table Format
+
+```{r echo=TRUE}
+books_xmltable
+```
+
+The `HTML` Table Format
+
+```{r echo=TRUE}
+books_htmltable
+```
+
+The `JSON` Table Format
+
+```{r echo=TRUE}
+json_books
+```
