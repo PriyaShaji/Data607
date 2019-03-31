@@ -1,0 +1,97 @@
+---
+title: "Assignment_9"
+author: "Priya Shaji"
+date: "3/29/2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Web APIs{.tabset}
+
+The New York Times web site provides a rich set of APIs, as described here: http://developer.nytimes.com/docs You’ll need to start by signing up for an API key.
+Your task is to choose one of the New York Times APIs, construct an interface in R to read in the JSON data, and transform it to an R dataframe.
+
+With the New York Times Article Search API, you can search New York Times articles from September 18, 1851 to today, retrieving headlines, abstracts, lead paragraphs, links to associated multimedia, and other article metadata. Note: In URI examples and field names, italics indicate placeholders for variables or values. Brackets [ ] indicate optional items. Parentheses ( ) are not a convention– when URIs include parentheses, interpret them literally.
+
+### Libraries used
+
+Install and load the following required libraries
+
+```{r}
+library(httr)
+library(jsonlite)
+library (plyr)
+library(dplyr)
+```
+
+
+
+### Read the data
+
+1) Read the data from the url and store in json
+
+First step of this assignment is to obtain a API key from NYT website. I am choosing the Article Search API( http://developer.nytimes.com/article_search_v2.json). This API provides information about book reviews and The New York Times bestsellers lists.
+
+```{r}
+
+json <- "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=education&api-key=dbIkpHAuwaq2ki67A4dlJx8IQgSXrTcQ"
+
+
+```
+
+
+### JSON() function 
+
+2) Now pass the url stored object in fromJSON() function
+
+```{r}
+json <- fromJSON(json, simplifyVector = TRUE)
+
+json
+```
+
+### Analyzing the dataframe
+
+3) In json , the response$docs has the data which we need
+
+```{r}
+str(json$response$docs)
+```
+
+
+4) Let's explore the column names for the articles with education as the topic
+
+```{r}
+names(json$response$docs)
+
+```
+
+
+
+5) Create a datframe which has the information needed for the topic related to education 
+
+
+
+
+```{r}
+education_dataframe<-json$response$docs
+
+education_dataframe <- education_dataframe%>%
+  select(web_url,lead_paragraph,abstract,source,document_type,news_desk,section_name,subsection_name,type_of_material,word_count,uri)
+
+education_dataframe<-as.data.frame(education_dataframe)
+
+education_dataframe
+
+```
+
+
+
+
+
+
