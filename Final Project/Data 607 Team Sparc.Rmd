@@ -168,7 +168,7 @@ Process
 
 In Mysql
 
-1) create database MSProject3
+1) create database Data607FinalProject
 2) set it as default schema
 3) import tables from the local file via Table Data Import Wizard
 
