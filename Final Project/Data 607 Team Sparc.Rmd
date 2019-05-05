@@ -197,21 +197,19 @@ CheckDB <- function() {
 #--------------- Drop Table if Exists 
   
   
-if(dbExistsTable(con2, "druglibtrain_raw")){
-    dbRemoveTable(con2,"druglibtrain_raw")
+if(dbExistsTable(con2, "dataset")){
+    dbRemoveTable(con2,"dataset")
   
   }
  
-  #if(dbExistsTable(con2, "tweet")){
-   # dbRemoveTable(con2,"tweet")
+
   
   
-  #}
   
-#-------------- Create first table for druglibtrain_raw
+#-------------- Create first table for dataset
   
   
-query <- "CREATE TABLE `druglibtrain_raw` (  
+query <- "CREATE TABLE `dataset` (  
 `Drug_id`  INT AUTO_INCREMENT,
 `urlDrugName` VARCHAR(45) NULL,
 `rating` VARCHAR(45) NULL,
@@ -245,18 +243,18 @@ updateDB <- function(urlDrugName, rating, effectiveness, sideEffects, condition,
   con2 <- dbConnect(RMySQL::MySQL(), dbname = "Data607FinalProject", host="localhost", user="root",password= "Sparc@DATA_607")
   
  
-#--------------- Update druglibtrain_raw table 
+#--------------- Update dataset table 
   
   
-query <- sprintf("insert into druglibtrain_raw (DrugName, Rating, Effectiveness, SideEffects, Condition, BenefitsReview, SideEffectsReview, CommentsReview) values('%s','%s','%s','%s','%s','%s','%s','%s')",urlDrugName, rating, effectiveness, sideEffects, condition, benefitsReview, sideEffectsReview, commentsReview)
+query <- sprintf("insert into dataset (DrugName, Rating, Effectiveness, SideEffects, Condition, BenefitsReview, SideEffectsReview, CommentsReview) values('%s','%s','%s','%s','%s','%s','%s','%s')",urlDrugName, rating, effectiveness, sideEffects, condition, benefitsReview, sideEffectsReview, commentsReview)
   print (query)
 tab1 <- dbSendQuery(con2,query)
 tab1data <- dbFetch(tab1)
 
-#--------------- Get 'Drug_id' to update druglibtrain_raw table
+#--------------- Get 'Drug_id' to update dataset table
 
 
-query <- sprintf("select Drug_id from druglibtrain_raw  where DrugName='%s', Rating='%s', Effectiveness='%s', SideEffects='%s', Condition='%s', BenefitsReview='%s', SideEffectsReview='%s', CommentsReview='%s' limit 1",urlDrugName, rating, effectiveness, sideEffects, condition, benefitsReview, sideEffectsReview, commentsReview)
+query <- sprintf("select Drug_id from dataset where DrugName='%s', Rating='%s', Effectiveness='%s', SideEffects='%s', Condition='%s', BenefitsReview='%s', SideEffectsReview='%s', CommentsReview='%s' limit 1",urlDrugName, rating, effectiveness, sideEffects, condition, benefitsReview, sideEffectsReview, commentsReview)
   
 tab1 <- dbSendQuery(con2,query)
 tab1data <- dbFetch(tab1)
@@ -272,6 +270,9 @@ dbDisconnect(con2)
 
 
 }
+
+
+
 
 
 
