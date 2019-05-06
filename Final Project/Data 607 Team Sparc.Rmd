@@ -18,6 +18,11 @@ output: html_document
 ```{r eval=FALSE}
 library(tidyverse)
 library(psych)
+library(tidyverse)
+library(rpart)
+library(rpart.plot)
+library(party)
+library(kableExtra)
 ```
 
 
