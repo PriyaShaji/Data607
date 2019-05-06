@@ -24,9 +24,31 @@ library(psych)
 
 ```{r}
 
-drugtrain <- read.csv("https://raw.githubusercontent.com/PriyaShaji/Data607/master/Final%20Project/drugLibTrain_raw.csv", header=TRUE, check.names = FALSE)
+train <- read_tsv("https://raw.githubusercontent.com/PriyaShaji/Data607/master/Final%20Project/drugLibTrain_raw.tsv", col_names = TRUE, cols(
+  X1 = col_double(),
+  urlDrugName = col_character(),
+  rating = col_double(),
+  effectiveness = col_factor(),
+  sideEffects = col_factor(),
+  condition = col_factor(),
+  benefitsReview = col_character(),
+  sideEffectsReview = col_character(),
+  commentsReview = col_character()
+))
 
-drugtest <- read.csv("https://raw.githubusercontent.com/PriyaShaji/Data607/master/Final%20Project/drugLibTest_raw.csv", header=TRUE, check.names = FALSE)
+test <- read_tsv("https://raw.githubusercontent.com/PriyaShaji/Data607/master/Final%20Project/drugLibTest_raw.tsv", col_names = TRUE, cols(
+  X1 = col_double(),
+  urlDrugName = col_character(),
+  rating = col_double(),
+  effectiveness = col_factor(),
+  sideEffects = col_factor(),
+  condition = col_factor(),
+  benefitsReview = col_character(),
+  sideEffectsReview = col_character(),
+  commentsReview = col_character()
+))
+
+dataset <- full_join(train, test)
 
 ```
 
@@ -36,7 +58,7 @@ drugtest <- read.csv("https://raw.githubusercontent.com/PriyaShaji/Data607/maste
 ```{r}
 library(FSA)
 
-Drugs_summary<-Summarize(drugtrain$rating ~ drugtrain$urlDrugName,
+Drugs_summary<-Summarize(dataset$rating ~ dataset$urlDrugName,
           , 
           digits=3)
 
@@ -46,8 +68,8 @@ head(Drugs_summary)
 
 
 ```{r}
-qqnorm(drugtrain$rating)
-qqline(drugtrain$rating)
+qqnorm(dataset$rating)
+qqline(dataset$rating)
 ```
 
 
@@ -69,7 +91,7 @@ H1= not all means are equal
 
 
 ```{r}
-drug.aov<-aov(drugtrain$rating~drugtrain$effectiveness )
+drug.aov<-aov(dataset$rating~dataset$effectiveness )
 ```
 
 ```{r}
@@ -77,7 +99,6 @@ attributes(drug.aov)
 
 summary(drug.aov)
 
-#drug.aov$coefficients
 ```
 
 Since. the p-value is less than 0.05,  we will reject the null hypothesis and conclude that not all means are equal
@@ -102,7 +123,7 @@ H0= An extremely effective drug means a high rated drug
 H1= An extremely effective drug is not necessarily a high rated drug
 
 ```{r}
-kruskal.test(drugtrain$rating~drugtrain$effectiveness)
+kruskal.test(dataset$rating~dataset$effectiveness)
 ```
 
 
@@ -115,7 +136,7 @@ Create a new variable which is the rating values as an ordered factor
 ```{r}
  
 
-drugtrain$rating.f = factor(drugtrain$rating,
+dataset$rating.f = factor(dataset$rating,
                           ordered=TRUE)
 
 ```
@@ -125,7 +146,7 @@ Summarize data treating rating  as factors
 
 ```{r}
 #xtabs( ~ urlDrugName + rating.f,
- #     data = drugtrain)
+ #     data = dataset)
 ```
 
 
@@ -133,7 +154,7 @@ Proportional table for rating of all drugs
 
 ```{r}
 #XT = xtabs( ~ urlDrugName + rating.f,
- #     data = drugtrain)
+ #     data = dataset)
 
 
 #prop.table(XT, 
@@ -153,7 +174,7 @@ library(lattice)
 par(mfrow=c(10,10))
 
 drug_rating_plot<-histogram(~ rating.f | urlDrugName,
-          data=drugtrain,
+          data=dataset,
           layout=c(1,5)      #  columns and rows of individual plots
           )
 
