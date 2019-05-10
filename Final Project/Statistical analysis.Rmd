@@ -76,6 +76,8 @@ CIUpper <- p + 1.96 * SE
 
 ```
 
+<strong>Result</strong>: With 95% confidence, we can confirm that given a drug is rated ‘Extremely Effective’, we can say that the probability of drug having ‘No Side Effect’ is 0.3750536 and 0.4210406
+
 
 <strong>Kruskal Wallis One way analysis of variance</strong>
 
@@ -190,3 +192,7 @@ multcompLetters(drug.wilcox.table,
 
 
 Values not sharing the same letter are significantly different. In this case , all the levels of effectiveness are significantly different.
+
+
+Looking at the data analysis, we can observe that there are different ratings provided by the patients for each drug based on the experiences they have with it. Patient can assign the drug effectiveiness varying from ‘ineffective’ to ‘Highly Effective’, the side effects from ‘No Side effects’ to ‘Extremely Severe Side Effects’ and a rating from 1 to 10. When we tried to make an inference, we observed that an extremely effeective drug doesn’t mean a highly rated drug. Therefore, we can conclude that even if a drug is classified as ‘Highly Effective’ it doesn’t necessarily means it’s the right drug that can be suggested to a patient, since the patient may not have felt comfortable due to it’s side effects.
+
